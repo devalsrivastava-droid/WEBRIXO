@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /auth
+Disallow: /account
+Disallow: /thank-you
+
+Sitemap: https://webrixo.com/sitemap.xml
