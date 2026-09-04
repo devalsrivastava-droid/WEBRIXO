@@ -62,7 +62,7 @@ export function CurrencySwitcher({ code, guessed, onChoose }: {
 /* ── Deposit checkout ───────────────────────────────────────────────────────
    Collects only what a receipt needs, then hands off to Stripe or Razorpay.
    Card details are entered on the provider's own page, never here. */
-export type PlanKey = "starter" | "studio" | "care";
+export type PlanKey = "starter" | "studio" | "care" | "custom";
 
 export function Checkout({ plan, planName, baseInr, depositInr, code, onClose }: {
   plan: PlanKey; planName: string; baseInr: number; depositInr: number; code: CurrencyCode; onClose: () => void;

@@ -1,107 +1,189 @@
-import { useState, useEffect } from "react";
-import { motion, useInView } from "framer-motion";
-import { Link } from "react-router";
+import { useState } from "react";
 import { usePageMeta } from "@/hooks/use-page-meta";
+import { DemoBar, DemoFooter, Marquee, Parallax, Reveal, Rise, useFont, usePageBackground } from "./kit";
 
-/* Brew & Co. — demo coffee shop site. Warm, editorial, slow-paced. */
+/* Brew & Co. — a slow, editorial coffee site. Serif display, warm paper,
+   generous white space. The kind of site you'd want to read on a Sunday. */
 
-const C = { bg: "#f6efe4", ink: "#2a2118", muted: "#8a7a66", line: "#e5dac8", accent: "#c8873f", cream: "#fbf6ec", deep: "#1f1810" };
-const FONT = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Outfit:wght@400;500;600&display=swap";
-
-function Reveal({ children, delay = 0, y = 24 }: { children: React.ReactNode; delay?: number; y?: number }) {
-  return <motion.div initial={{ opacity: 0, y }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.8, delay: delay / 1000, ease: [0.215, 0.61, 0.355, 1] }}>{children}</motion.div>;
-}
+const FONT = "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap";
 
 const MENU = [
-  { n: "Espresso", d: "Double shot, single origin", p: "3.50" },
-  { n: "Flat White", d: "Velvety microfoam, house blend", p: "4.50" },
-  { n: "Pour Over", d: "Rotating single origin, brewed slow", p: "5.00" },
-  { n: "Cold Brew", d: "18-hour steep, served over ice", p: "4.75" },
-  { n: "Matcha Latte", d: "Ceremonial grade, oat milk", p: "5.25" },
-  { n: "Cortado", d: "Equal parts espresso + steamed milk", p: "4.00" },
+  { n: "Espresso", d: "Double shot, single origin, pulled short", p: "₹180" },
+  { n: "Flat white", d: "Velvety microfoam over the house blend", p: "₹240" },
+  { n: "Pour over", d: "Rotating origin, brewed slow at the bar", p: "₹280" },
+  { n: "Cold brew", d: "Eighteen hours steeped, poured over ice", p: "₹260" },
+  { n: "Cortado", d: "Equal parts espresso and steamed milk", p: "₹220" },
+  { n: "Filter of the day", d: "Ask whoever is on bar", p: "₹160" },
+];
+
+const ROASTS = [
+  { name: "Kalledevarapura", origin: "Chikmagalur, India", notes: "Cocoa, plum, brown sugar", roast: "Medium", price: "₹650 / 250g" },
+  { name: "Yirgacheffe", origin: "Gedeb, Ethiopia", notes: "Jasmine, bergamot, peach", roast: "Light", price: "₹850 / 250g" },
+  { name: "Huila", origin: "Pitalito, Colombia", notes: "Caramel, red apple, almond", roast: "Medium dark", price: "₹720 / 250g" },
 ];
 
 export default function DemoBrew() {
   usePageMeta({
     title: "Brew & Co. — Coffee, made slowly",
-    description: "A demo coffee shop website built by WEBRIXO. Small-batch roasts, real menus, and a corner window with afternoon sun.",
+    description: "A concept coffee shop site built by WEBRIXO: menu, roasts, and a corner window with afternoon sun.",
     path: "/demos/brew",
   });
-  const [t, setT] = useState(0);
-  useEffect(() => { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = FONT; document.head.appendChild(l); }, []);
-  useEffect(() => { document.body.style.background = C.bg; return () => { document.body.style.background = ""; }; }, []);
+  useFont(FONT);
+  usePageBackground("#f6efe4");
+  const [roast, setRoast] = useState(0);
 
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, color: C.ink, fontFamily: "'Outfit',sans-serif" }}>
-      {/* Demo bar */}
-      <div style={{ position: "fixed", top: 0, insetInline: 0, zIndex: 60, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.75rem 1.25rem", background: "rgba(246,239,230,.85)", backdropFilter: "blur(10px)", borderBottom: `1px solid ${C.line}` }}>
-        <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.75rem", fontWeight: 600, letterSpacing: ".03em", textTransform: "uppercase", color: C.ink, textDecoration: "none" }}>← Back to WEBRIXO</Link>
-        <span style={{ fontSize: "0.7rem", fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", color: C.muted, border: `1px solid ${C.line}`, borderRadius: "9999px", padding: "0.25rem 0.75rem" }}>Demo — Coffee Shop</span>
-      </div>
+    <div className="d-site" style={{
+      ["--bg" as string]: "#f6efe4", ["--ink" as string]: "#241c14", ["--muted" as string]: "#8a7a66",
+      ["--line" as string]: "rgba(36,28,20,.14)", ["--accent" as string]: "#b4682a", ["--accent-ink" as string]: "#fdf8f0",
+      ["--panel" as string]: "rgba(36,28,20,.05)", ["--radius" as string]: "4px",
+      ["--display" as string]: "'Fraunces', Georgia, serif", ["--body" as string]: "'Inter', system-ui, sans-serif",
+    }}>
+      <DemoBar label="Coffee shop" />
+
+      <nav className="d-nav">
+        <span className="d-nav__brand">Brew&nbsp;&amp;&nbsp;Co.</span>
+        <div className="d-nav__links">
+          <a href="#menu">Menu</a><a href="#roasts">Roasts</a><a href="#story">Our story</a><a href="#visit">Visit</a>
+        </div>
+        <a href="#visit" className="d-nav__cta">Order beans</a>
+      </nav>
 
       {/* Hero */}
-      <section style={{ position: "relative", minHeight: "92vh", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "6rem 1.5rem 4rem", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 80% 0%, rgba(200,135,63,.18) 0%, transparent 55%), linear-gradient(180deg, #f1e7d6 0%, #f6efe6 100%)" }} />
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: [0.215, 0.61, 0.355, 1] }} style={{ position: "relative", maxWidth: "72rem", margin: "0 auto", width: "100%" }}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.8rem", fontWeight: 600, letterSpacing: ".12em", textTransform: "uppercase", color: C.accent, marginBottom: "1.5rem" }}><span style={{ width: "2rem", height: "1px", background: C.accent }} />Est. 2016</span>
-          <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(3rem, 9vw, 6.5rem)", fontWeight: 400, lineHeight: 1.02, letterSpacing: "-.02em", maxWidth: "12ch" }}>Coffee,<br /><em style={{ color: C.accent }}>made slowly.</em></h1>
-          <p style={{ marginTop: "1.75rem", maxWidth: "34ch", fontSize: "1.05rem", lineHeight: 1.6, color: C.muted }}>Small-batch roasts, baked goods from scratch, and a corner window that gets the afternoon sun.</p>
-          <div style={{ marginTop: "2.5rem", display: "flex", flexWrap: "wrap", gap: "1rem" }}>
-            <a href="#menu" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: C.deep, color: C.cream, border: "none", borderRadius: "9999px", padding: "1rem 2rem", fontSize: "0.9rem", fontWeight: 600, textDecoration: "none", cursor: "pointer" }}>See the menu →</a>
-            <a href="#visit" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "transparent", color: C.ink, border: `1px solid ${C.line}`, borderRadius: "9999px", padding: "1rem 2rem", fontSize: "0.9rem", fontWeight: 600, textDecoration: "none", cursor: "pointer" }}>Find the shop</a>
+      <header className="d-wrap brew-hero">
+        <p className="d-eyebrow brew-hero__eyebrow">Est. 2019 · Bandra West</p>
+        <Rise as="h1" text="Coffee, made slowly." className="d-display brew-hero__h" />
+        <Reveal delay={420}>
+          <p className="d-lead brew-hero__p">
+            We roast in small batches on a Tuesday and sell it before Friday. No syrups, no queue system,
+            no hurry. Just a corner window that gets the afternoon sun.
+          </p>
+          <div className="brew-hero__cta">
+            <a href="#menu" className="d-btn">See the menu</a>
+            <a href="#visit" className="d-btn d-btn--ghost">Find us</a>
           </div>
-        </motion.div>
-      </section>
+        </Reveal>
+
+        <Parallax amount={54} className="brew-hero__art">
+          <div className="d-art">
+            <div className="d-art__blob" style={{ inset: "6% 18% 42% 8%", background: "radial-gradient(circle, #d98b3f, transparent 70%)" }} />
+            <div className="d-art__blob" style={{ inset: "40% 6% 8% 30%", background: "radial-gradient(circle, #6b3f22, transparent 70%)" }} />
+            <div className="d-art__ring" />
+            <div className="d-art__grain" />
+            <span className="brew-hero__cup">☕</span>
+          </div>
+        </Parallax>
+      </header>
+
+      <Marquee items={["Small batch", "Roasted Tuesdays", "Single origin", "Filter bar", "No syrups", "Open 7am"]} speed={38} />
 
       {/* Menu */}
-      <section id="menu" style={{ padding: "5rem 1.5rem" }}>
-        <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
-          <Reveal><span style={{ fontSize: "0.8rem", fontWeight: 600, letterSpacing: ".12em", textTransform: "uppercase", color: C.accent }}>The menu</span></Reveal>
-          <Reveal delay={80}><h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(2rem,5vw,3.25rem)", fontWeight: 400, marginTop: "0.75rem", marginBottom: "3rem" }}>Drinks we actually<br />enjoy making.</h2></Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1rem" }}>
-            {MENU.map((m, i) => (
-              <Reveal key={m.n} delay={i * 60}>
-                <motion.div whileHover={{ y: -4 }} transition={{ type: "spring", stiffness: 300, damping: 22 }} style={{ background: C.cream, border: `1px solid ${C.line}`, borderRadius: "1.25rem", padding: "1.5rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "1rem" }}>
-                    <h3 style={{ fontFamily: "'Playfair Display',serif", fontSize: "1.25rem", fontWeight: 600 }}>{m.n}</h3>
-                    <span style={{ color: C.accent, fontWeight: 600, fontSize: "0.95rem" }}>${m.p}</span>
-                  </div>
-                  <p style={{ fontSize: "0.875rem", color: C.muted }}>{m.d}</p>
-                </motion.div>
-              </Reveal>
-            ))}
+      <section id="menu" className="d-section d-wrap">
+        <div className="brew-head">
+          <Rise text="On the bar today" className="d-h2" />
+          <Reveal delay={160}><p className="d-body">Prices are the same whether you sit in or take away. Oat milk is no extra.</p></Reveal>
+        </div>
+        <div className="brew-menu">
+          {MENU.map((m, i) => (
+            <Reveal as="div" key={m.n} delay={i * 60}>
+              <div className="d-row">
+                <div>
+                  <div className="d-row__name">{m.n}</div>
+                  <div className="d-small">{m.d}</div>
+                </div>
+                <div className="d-row__price">{m.p}</div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* Roasts */}
+      <section id="roasts" className="d-section brew-roasts">
+        <div className="d-wrap">
+          <div className="brew-head">
+            <Rise text="Three roasts, rotating" className="d-h2" />
+            <Reveal delay={160}><p className="d-body">Bags are ground to order. Tell us your brewer and we'll set the grind.</p></Reveal>
+          </div>
+          <div className="brew-roasts__grid">
+            <div className="brew-roasts__list">
+              {ROASTS.map((r, i) => (
+                <button key={r.name} className={`brew-roast ${roast === i ? "is-on" : ""}`} onClick={() => setRoast(i)}>
+                  <span className="brew-roast__n">0{i + 1}</span>
+                  <span>
+                    <span className="d-h3">{r.name}</span>
+                    <span className="d-small">{r.origin}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+            <Reveal className="brew-roasts__panel" key={roast}>
+              <div className="d-art d-art--wide brew-roasts__art">
+                <div className="d-art__blob" style={{ inset: "10% 30% 30% 10%", background: `radial-gradient(circle, ${["#c98a45", "#cbb26a", "#a8623a"][roast]}, transparent 70%)` }} />
+                <div className="d-art__blob" style={{ inset: "35% 10% 10% 40%", background: `radial-gradient(circle, ${["#5c3a21", "#7d7a3f", "#6d3a24"][roast]}, transparent 70%)` }} />
+                <div className="d-art__grain" />
+              </div>
+              <dl className="brew-roasts__facts">
+                <div><dt>Tastes like</dt><dd>{ROASTS[roast].notes}</dd></div>
+                <div><dt>Roast</dt><dd>{ROASTS[roast].roast}</dd></div>
+                <div><dt>Bag</dt><dd>{ROASTS[roast].price}</dd></div>
+              </dl>
+              <a href="#visit" className="d-btn">Order {ROASTS[roast].name.split(" ")[0]}</a>
+            </Reveal>
           </div>
         </div>
       </section>
 
       {/* Story */}
-      <section style={{ background: C.deep, color: C.cream, padding: "5rem 1.5rem" }}>
-        <div style={{ maxWidth: "72rem", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr", gap: "2rem" }}>
-          <Reveal><span style={{ fontSize: "0.8rem", fontWeight: 600, letterSpacing: ".12em", textTransform: "uppercase", color: C.accent }}>Our story</span></Reveal>
-          <Reveal delay={80}><p style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(1.6rem, 3.5vw, 2.6rem)", lineHeight: 1.35, maxWidth: "24ch" }}>Two friends, one secondhand roaster, and a lot of trial and error.</p></Reveal>
-          <Reveal delay={160}><p style={{ maxWidth: "52ch", lineHeight: 1.7, color: "rgba(251,246,236,.65)", fontSize: "0.95rem" }}>We started roasting in a garage in 2016. Today the beans travel two blocks from the roastery to the counter — the shortest supply chain in the city, and the freshest cup we know how to pour.</p></Reveal>
+      <section id="story" className="d-section d-wrap">
+        <div className="d-split">
+          <Parallax amount={-30}>
+            <div className="d-art">
+              <div className="d-art__blob" style={{ inset: "12% 12% 38% 12%", background: "radial-gradient(circle, #e0a765, transparent 70%)" }} />
+              <div className="d-art__blob" style={{ inset: "45% 20% 10% 18%", background: "radial-gradient(circle, #4d2f1a, transparent 70%)" }} />
+              <div className="d-art__ring" />
+              <div className="d-art__grain" />
+            </div>
+          </Parallax>
+          <div>
+            <Rise text="One room, one roaster, one long counter." className="d-h2" />
+            <Reveal delay={200}>
+              <p className="d-body brew-story__p">
+                We started in a 400 square foot room with a second-hand roaster and a hand grinder. Most of that
+                is still true. The counter is long enough for eleven people, and the regulars have opinions about
+                where they sit.
+              </p>
+              <p className="d-body brew-story__p">
+                If you want to see the roast, come on a Tuesday morning. Bring a jar and we'll fill it.
+              </p>
+            </Reveal>
+          </div>
         </div>
       </section>
 
       {/* Visit */}
-      <section id="visit" style={{ padding: "5rem 1.5rem" }}>
-        <div style={{ maxWidth: "72rem", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr", gap: "2.5rem" }}>
-          <Reveal><h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 400 }}>Come say hi.</h2></Reveal>
-          <Reveal delay={80}><div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", fontSize: "0.95rem" }}>
-            <div><p style={{ fontWeight: 600 }}>Hours</p><p style={{ color: C.muted }}>Mon–Fri · 7am–6pm<br />Sat–Sun · 8am–5pm</p></div>
-            <div><p style={{ fontWeight: 600 }}>Find us</p><p style={{ color: C.muted }}>14 Willow Street, corner of 3rd Ave</p></div>
-            <div><p style={{ fontWeight: 600 }}>Say hi</p><p style={{ color: C.muted }}>hello@brewandco.com</p></div>
-          </div></Reveal>
+      <section id="visit" className="d-section brew-visit">
+        <div className="d-wrap d-split">
+          <div>
+            <Rise text="Come and sit down." className="d-h2" />
+            <Reveal delay={180}>
+              <address className="brew-visit__addr">
+                14 Chapel Road, Bandra West<br />Mumbai 400050
+              </address>
+              <a href="#visit" className="d-btn">Get directions</a>
+            </Reveal>
+          </div>
+          <Reveal delay={120}>
+            <dl className="brew-hours">
+              {[["Monday", "Closed"], ["Tuesday — Friday", "7:00 — 18:00"], ["Saturday", "8:00 — 19:00"], ["Sunday", "8:00 — 15:00"]].map(([d, h]) => (
+                <div key={d}><dt>{d}</dt><dd>{h}</dd></div>
+              ))}
+            </dl>
+          </Reveal>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer style={{ borderTop: `1px solid ${C.line}`, padding: "2.5rem 1.5rem" }}>
-        <div style={{ maxWidth: "72rem", margin: "0 auto", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
-          <span style={{ fontFamily: "'Playfair Display',serif", fontSize: "1.25rem", fontWeight: 600 }}>Brew &amp; Co.</span>
-          <span style={{ fontSize: "0.8rem", color: C.muted }}>© 2026 Brew &amp; Co. — A WEBRIXO demo site</span>
-        </div>
-      </footer>
+      <DemoFooter name="Brew & Co." line="Your café could open like this." />
     </div>
   );
 }

@@ -1,120 +1,155 @@
-import { useEffect } from "react";
-import { motion } from "framer-motion";
-import { Link } from "react-router";
+import { useEffect, useState } from "react";
 import { usePageMeta } from "@/hooks/use-page-meta";
+import { Count, DemoBar, DemoFooter, Marquee, Reveal, Rise, Tilt, useFont, usePageBackground } from "./kit";
 
-/* Taskly — demo SaaS landing page. Clean, modern, product-focused. */
+/* Taskly — a product landing page. Cool indigo, tight grid, a live-ish app
+   mock that ticks itself off. The kind of page a small SaaS actually needs. */
 
-const C = { bg: "#fbfbfd", fg: "#101828", muted: "#667085", line: "#eaecf0", accent: "#5b5bd6", accentSoft: "#eef0ff", ink: "#0b0b1a" };
-const FONT = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap";
+const FONT = "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap";
 
-const FEATURES = [
-  { n: "Boards & lists", d: "Organize work the way your brain actually works." },
-  { n: "Deadlines that nag", d: "Gentle reminders before things slip, not after." },
-  { n: "Team views", d: "See who's doing what, without asking around." },
-  { n: "Offline-first", d: "Keep working on the plane. Syncs when you land." },
+const TASKS = [
+  { t: "Send Q3 numbers to Priya", tag: "Today", done: false },
+  { t: "Book the venue deposit", tag: "Today", done: false },
+  { t: "Reply to the supplier", tag: "Tomorrow", done: false },
+  { t: "Draft the newsletter", tag: "This week", done: false },
+  { t: "Renew the domain", tag: "This week", done: false },
 ];
 
-const PRICING = [
-  { n: "Starter", p: "$0", per: "forever", f: ["Up to 5 projects", "Unlimited tasks", "2 teammates"] },
-  { n: "Pro", p: "$8", per: "per user / month", f: ["Unlimited projects", "Automations", "Priority support"], hot: true },
-  { n: "Enterprise", p: "Custom", per: "tailored", f: ["SSO & SAML", "Audit logs", "Dedicated manager"] },
+const FEATURES = [
+  { n: "Capture in a second", d: "Type it and move on. Taskly works out the date, the list and the priority from the way you wrote it.", c: "#6d6dff" },
+  { n: "Plans that survive contact", d: "Drag anything you didn't finish into tomorrow with one key. No guilt, no red badges.", c: "#22d3ee" },
+  { n: "Works offline", d: "On a train, on a plane, in a basement. It syncs when you surface.", c: "#a78bfa" },
+  { n: "Shared without the noise", d: "Share one list with one person. Nobody gets a workspace invite they didn't ask for.", c: "#34d399" },
 ];
 
 export default function DemoTaskly() {
   usePageMeta({
-    title: "Taskly — The to-do list your team will use | Demo",
-    description: "A demo SaaS landing page built by WEBRIXO. Simple pricing, offline-first, and a CTA that works.",
+    title: "Taskly — Your day, in order",
+    description: "A concept product site built by WEBRIXO for a to-do app: one promise, three screens, one sign-up.",
     path: "/demos/taskly",
   });
-  useEffect(() => { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = FONT; document.head.appendChild(l); }, []);
-  useEffect(() => { document.body.style.background = C.bg; return () => { document.body.style.background = ""; }; }, []);
+  useFont(FONT);
+  usePageBackground("#0b0b14");
+  const [checked, setChecked] = useState<number[]>([]);
+  const [annual, setAnnual] = useState(true);
 
-  const fade = { initial: { opacity: 0, y: 24 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, amount: 0.2 }, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } };
+  // The mock ticks itself off, then resets — it should feel alive, not static.
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let i = 0;
+    const id = setInterval(() => {
+      i += 1;
+      if (i > TASKS.length) { i = 0; setChecked([]); }
+      else setChecked(prev => [...prev, i - 1]);
+    }, 1400);
+    return () => clearInterval(id);
+  }, []);
 
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, color: C.fg, fontFamily: "'Inter',sans-serif" }}>
-      {/* Demo bar */}
-      <div style={{ position: "fixed", top: 0, insetInline: 0, zIndex: 60, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.75rem 1.25rem", background: "rgba(251,251,253,.85)", backdropFilter: "blur(10px)", borderBottom: `1px solid ${C.line}` }}>
-        <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.75rem", fontWeight: 600, letterSpacing: ".03em", textTransform: "uppercase", color: C.fg, textDecoration: "none" }}>← Back to WEBRIXO</Link>
-        <span style={{ fontSize: "0.7rem", fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", color: C.muted, border: `1px solid ${C.line}`, borderRadius: "9999px", padding: "0.25rem 0.75rem" }}>Demo — SaaS</span>
-      </div>
+    <div className="d-site task" style={{
+      ["--bg" as string]: "#0b0b14", ["--ink" as string]: "#eeeef8", ["--muted" as string]: "#8b8ba7",
+      ["--line" as string]: "rgba(238,238,248,.12)", ["--accent" as string]: "#6d6dff", ["--accent-ink" as string]: "#ffffff",
+      ["--panel" as string]: "rgba(238,238,248,.05)", ["--radius" as string]: "14px",
+      ["--display" as string]: "'Plus Jakarta Sans', system-ui, sans-serif", ["--body" as string]: "'Plus Jakarta Sans', system-ui, sans-serif",
+    }}>
+      <DemoBar label="Software" />
 
-      {/* Nav */}
-      <header style={{ padding: "4.5rem 1.5rem 1rem", maxWidth: "72rem", margin: "0 auto" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span style={{ fontWeight: 800, fontSize: "1.25rem", letterSpacing: "-.02em" }}>taskly<span style={{ color: C.accent }}>.</span></span>
-          <nav style={{ display: "flex", gap: "2rem", fontSize: "0.875rem", fontWeight: 500, color: C.muted }}>
-            <a href="#features" style={{ textDecoration: "none", color: "inherit" }}>Features</a>
-            <a href="#pricing" style={{ textDecoration: "none", color: "inherit" }}>Pricing</a>
-            <a href="#cta" style={{ textDecoration: "none", color: "inherit" }}>Sign up</a>
-          </nav>
+      <nav className="d-nav">
+        <span className="d-nav__brand">Taskly</span>
+        <div className="d-nav__links"><a href="#features">Product</a><a href="#pricing">Pricing</a><a href="#faq">Docs</a></div>
+        <a href="#pricing" className="d-nav__cta">Start free</a>
+      </nav>
+
+      <header className="d-wrap task-hero">
+        <div>
+          <Reveal><span className="task-pill">New · Offline sync</span></Reveal>
+          <Rise as="h1" text="Your day, in order." className="d-display" delay={80} />
+          <Reveal delay={420}>
+            <p className="d-lead">Capture a task in a second. Plan the day in a minute. Taskly is a to-do app that doesn't ask you to run a project.</p>
+            <div className="task-hero__cta">
+              <a href="#pricing" className="d-btn">Start free</a>
+              <a href="#features" className="d-btn d-btn--ghost">See how it works</a>
+            </div>
+            <p className="d-small task-hero__note">Free for one list, forever. No card.</p>
+          </Reveal>
         </div>
+
+        <Reveal delay={260}>
+          <Tilt className="task-app" max={5}>
+            <div className="task-app__bar"><span /><span /><span /><em>Today · 5 tasks</em></div>
+            <ul className="task-app__list">
+              {TASKS.map((t, i) => (
+                <li key={t.t} className={checked.includes(i) ? "is-done" : ""}>
+                  <span className="task-app__box" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12.5 9 17.5 20 6.5" /></svg>
+                  </span>
+                  <span className="task-app__t">{t.t}</span>
+                  <span className="task-app__tag">{t.tag}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="task-app__foot"><span className="task-app__input">Add a task…</span><span className="task-app__key">⏎</span></div>
+          </Tilt>
+        </Reveal>
       </header>
 
-      {/* Hero */}
-      <section style={{ padding: "4rem 1.5rem 5rem", maxWidth: "72rem", margin: "0 auto", textAlign: "center" }}>
-        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.8rem", fontWeight: 600, color: C.accent, background: C.accentSoft, border: "1px solid rgba(91,91,214,.2)", borderRadius: "9999px", padding: "0.4rem 1rem" }}>New · Offline mode is here</span>
-          <h1 style={{ fontSize: "clamp(2.6rem, 7vw, 4.5rem)", fontWeight: 800, letterSpacing: "-.03em", lineHeight: 1.05, margin: "1.5rem auto 1.25rem", maxWidth: "16ch" }}>The to-do list your team will actually use.</h1>
-          <p style={{ fontSize: "1.1rem", color: C.muted, maxWidth: "44ch", margin: "0 auto", lineHeight: 1.6 }}>Simple enough for a solo freelancer, powerful enough for a team of fifty. Set up in under a minute.</p>
-          <div style={{ marginTop: "2.25rem", display: "flex", flexWrap: "wrap", gap: "0.875rem", justifyContent: "center" }}>
-            <a href="#cta" style={{ background: C.accent, color: "#fff", borderRadius: "0.75rem", padding: "0.9rem 1.75rem", fontSize: "0.95rem", fontWeight: 600, textDecoration: "none", boxShadow: "0 8px 24px rgba(91,91,214,.25)" }}>Start for free</a>
-            <a href="#features" style={{ background: "#fff", color: C.fg, border: `1px solid ${C.line}`, borderRadius: "0.75rem", padding: "0.9rem 1.75rem", fontSize: "0.95rem", fontWeight: 600, textDecoration: "none" }}>See how it works</a>
-          </div>
-        </motion.div>
+      <Marquee items={["Capture", "Plan", "Do", "Offline", "Shared lists", "One keystroke"]} speed={30} />
+
+      <section className="d-section d-wrap task-stats">
+        {[["Average capture", 1.2, "s", 1], ["Daily actives", 24, "k", 0], ["Sync conflicts", 0, "", 0]].map(([l, v, s, d]) => (
+          <Reveal key={String(l)} className="task-stat">
+            <span className="task-stat__n"><Count to={v as number} suffix={s as string} decimals={d as number} /></span>
+            <span className="d-small">{l as string}</span>
+          </Reveal>
+        ))}
       </section>
 
       {/* Features */}
-      <section id="features" style={{ padding: "4rem 1.5rem", background: "#fff", borderTop: `1px solid ${C.line}`, borderBottom: `1px solid ${C.line}` }}>
-        <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
-          <motion.h2 {...fade} style={{ fontSize: "clamp(1.8rem, 4vw, 2.5rem)", fontWeight: 800, letterSpacing: "-.02em", marginBottom: "2.5rem", maxWidth: "18ch" }}>Everything you need. Nothing you don't.</motion.h2>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1rem" }}>
-            {FEATURES.map((f, i) => (
-              <motion.div key={f.n} {...fade} transition={{ ...fade.transition, delay: i * 0.05 }} whileHover={{ y: -4 }} style={{ background: C.bg, border: `1px solid ${C.line}`, borderRadius: "1rem", padding: "1.5rem" }}>
-                <span style={{ display: "inline-grid", placeItems: "center", width: "2.25rem", height: "2.25rem", borderRadius: "0.625rem", background: C.accentSoft, color: C.accent, fontWeight: 700, fontSize: "0.875rem", marginBottom: "0.875rem" }}>{String(i + 1).padStart(2, "0")}</span>
-                <h3 style={{ fontWeight: 700, fontSize: "1.05rem" }}>{f.n}</h3>
-                <p style={{ marginTop: "0.375rem", fontSize: "0.875rem", color: C.muted, lineHeight: 1.6 }}>{f.d}</p>
-              </motion.div>
-            ))}
-          </div>
+      <section id="features" className="d-section d-wrap">
+        <Rise text="Small app, few opinions, held firmly." className="d-h2 task-featTitle" />
+        <div className="d-grid d-2 task-feats">
+          {FEATURES.map((f, i) => (
+            <Reveal key={f.n} delay={i * 100}>
+              <Tilt className="task-feat" max={4}>
+                <span className="task-feat__dot" style={{ background: f.c }} />
+                <h3 className="d-h3">{f.n}</h3>
+                <p className="d-body">{f.d}</p>
+              </Tilt>
+            </Reveal>
+          ))}
         </div>
       </section>
 
       {/* Pricing */}
-      <section id="pricing" style={{ padding: "5rem 1.5rem" }}>
-        <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
-          <motion.h2 {...fade} style={{ fontSize: "clamp(1.8rem, 4vw, 2.5rem)", fontWeight: 800, letterSpacing: "-.02em", textAlign: "center", marginBottom: "2.5rem" }}>Simple pricing</motion.h2>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1rem" }}>
-            {PRICING.map((p, i) => (
-              <motion.div key={p.n} {...fade} transition={{ ...fade.transition, delay: i * 0.06 }} whileHover={{ y: -6 }} style={{ position: "relative", background: p.hot ? C.ink : "#fff", color: p.hot ? "#fff" : C.fg, border: p.hot ? "none" : `1px solid ${C.line}`, borderRadius: "1.25rem", padding: "2rem" }}>
-                {p.hot && <span style={{ position: "absolute", top: "1rem", right: "1rem", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: ".08em", background: C.accent, color: "#fff", borderRadius: "9999px", padding: "0.3rem 0.75rem" }}>Popular</span>}
-                <h3 style={{ fontWeight: 700, fontSize: "1rem" }}>{p.n}</h3>
-                <div style={{ margin: "0.75rem 0 1.25rem" }}><span style={{ fontWeight: 800, fontSize: "2.5rem", letterSpacing: "-.02em" }}>{p.p}</span><span style={{ fontSize: "0.875rem", color: p.hot ? "rgba(255,255,255,.6)" : C.muted }}> {p.per}</span></div>
-                <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "0.5rem", fontSize: "0.875rem" }}>{p.f.map(f => <li key={f} style={{ display: "flex", gap: "0.5rem" }}><span style={{ color: p.hot ? C.accent : C.accent }}>✓</span>{f}</li>)}</ul>
-                <a href="#cta" style={{ display: "block", textAlign: "center", marginTop: "1.5rem", background: p.hot ? C.accent : C.ink, color: "#fff", borderRadius: "0.75rem", padding: "0.875rem 1rem", fontSize: "0.875rem", fontWeight: 600, textDecoration: "none" }}>Get started</a>
-              </motion.div>
-            ))}
+      <section id="pricing" className="d-section task-pricing">
+        <div className="d-wrap">
+          <Rise text="Two plans. That's the whole page." className="d-h2" />
+          <Reveal delay={140} className="task-toggle">
+            <button aria-pressed={!annual} className={!annual ? "is-on" : ""} onClick={() => setAnnual(false)}>Monthly</button>
+            <button aria-pressed={annual} className={annual ? "is-on" : ""} onClick={() => setAnnual(true)}>Yearly · save 20%</button>
+          </Reveal>
+          <div className="d-grid d-2 task-plans">
+            <Reveal>
+              <div className="task-plan">
+                <h3 className="d-h3">Free</h3>
+                <div className="task-plan__p">₹0</div>
+                <ul>{["One list", "Unlimited tasks", "Offline on one device"].map(x => <li key={x}>{x}</li>)}</ul>
+                <a href="#pricing" className="d-btn d-btn--ghost">Get started</a>
+              </div>
+            </Reveal>
+            <Reveal delay={110}>
+              <div className="task-plan is-best">
+                <h3 className="d-h3">Pro</h3>
+                <div className="task-plan__p">{annual ? "₹160" : "₹200"}<span>/month</span></div>
+                <ul>{["Unlimited lists", "Shared lists", "Offline everywhere", "Sync across devices", "Email support that replies"].map(x => <li key={x}>{x}</li>)}</ul>
+                <a href="#pricing" className="d-btn">Start 14-day trial</a>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section id="cta" style={{ padding: "0 1.5rem 5rem" }}>
-        <motion.div {...fade} style={{ maxWidth: "72rem", margin: "0 auto", background: "linear-gradient(135deg, #5b5bd6 0%, #7b6cf0 100%)", borderRadius: "2rem", padding: "4.5rem 2rem", textAlign: "center", color: "#fff" }}>
-          <h2 style={{ fontSize: "clamp(1.8rem, 4.5vw, 3rem)", fontWeight: 800, letterSpacing: "-.02em" }}>Get your team on taskly.</h2>
-          <p style={{ margin: "1rem auto 2rem", maxWidth: "40ch", color: "rgba(255,255,255,.85)", fontSize: "1rem" }}>Free for your first 14 days. No credit card, no sales call, no awkward silence.</p>
-          <a href="#" style={{ display: "inline-flex", background: "#fff", color: C.accent, borderRadius: "0.75rem", padding: "0.9rem 2rem", fontSize: "0.95rem", fontWeight: 700, textDecoration: "none" }}>Start free trial</a>
-        </motion.div>
-      </section>
-
-      {/* Footer */}
-      <footer style={{ borderTop: `1px solid ${C.line}`, padding: "2.5rem 1.5rem" }}>
-        <div style={{ maxWidth: "72rem", margin: "0 auto", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
-          <span style={{ fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-.02em" }}>taskly<span style={{ color: C.accent }}>.</span></span>
-          <span style={{ fontSize: "0.8rem", color: C.muted }}>© 2026 Taskly — A WEBRIXO demo site</span>
-        </div>
-      </footer>
+      <DemoFooter name="Taskly" line="Your product could launch like this." />
     </div>
   );
 }

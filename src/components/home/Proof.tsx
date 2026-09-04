@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { convert, isHomeMarket } from "@/lib/region";
 import { Checkout, CurrencySwitcher, useCurrency, type PlanKey } from "./Checkout";
+import Configurator from "./Configurator";
 import { Fade, Words, Magnetic, gsap, ScrollTrigger, prefersReducedMotion } from "./motion";
 
 const Arrow = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" /></svg>;
@@ -30,10 +31,10 @@ export function Counter({ to, prefix = "", suffix = "", duration = 1.6, decimals
 
 /* ── Stats strip ── */
 const STATS = [
-  { to: 0.9, suffix: "s", decimals: 1, label: "Typical load time on a phone", note: "Most small-business sites take four times longer." },
-  { to: 4, suffix: " weeks", label: "From first call to launch", note: "Two weeks if your content is ready." },
-  { to: 100, suffix: "%", label: "Sites we hand over, in your name", note: "Hosting and domain stay yours." },
-  { to: 2, label: "People you'll ever talk to", note: "The same two who build it." },
+  { to: 0.9, suffix: "s", decimals: 1, label: "This page, loaded on a phone", note: "Measure it yourself. Yours would be built the same way." },
+  { to: 4, suffix: " weeks", label: "Brief to launch, at the outside", note: "Two if your words and photos are ready." },
+  { to: 100, suffix: "%", label: "Yours at handover", note: "Hosting and domain in your name. Nothing locked to us." },
+  { to: 1, label: "Person you'll ever talk to", note: "The same one who builds it." },
 ];
 
 export function Stats() {
@@ -147,6 +148,14 @@ export function Pricing({ onStart }: { onStart: () => void }) {
             );
           })}
         </div>
+        <Fade delay={180} className="wx-conf__wrap">
+          <div className="wx-conf__intro">
+            <h3 className="wx-h3">None of those quite fit?</h3>
+            <p className="wx-body">Describe the project in your own words below and we'll price what you actually asked for.</p>
+          </div>
+          <Configurator code={code} />
+        </Fade>
+
         <Fade as="p" className="wx-small wx-plans__note" delay={150}>
           {isHomeMarket(code)
             ? "Prices include everything described. GST is added where it applies. Photography, illustration and paid tools are quoted separately, and we tell you before you commit."
@@ -170,92 +179,101 @@ export function Pricing({ onStart }: { onStart: () => void }) {
   );
 }
 
-/* ── Words from clients: one quote at a time, swapped by scroll ── */
-const QUOTES = [
-  { text: "We went from a page nobody could find to twenty bookings a week. The site does the explaining so I don't have to.", who: "Meera R.", role: "Owner, yoga studio", accent: "var(--wx-copper)" },
-  { text: "They asked better questions than the agency we paid four times as much. Then they finished in a month.", who: "Daniel K.", role: "Founder, software company", accent: "var(--wx-signal)" },
-  { text: "I can change the menu myself in two minutes. That alone was worth it.", who: "Arjun S.", role: "Chef and owner, restaurant", accent: "#d9a441" },
-  { text: "Our old site took nine seconds to load on a phone. This one opens before you notice.", who: "Priya N.", role: "Manager, dental clinic", accent: "#4ade80" },
+/* ── Instead of testimonials ────────────────────────────────────────────────
+   A new studio has no clients yet, and invented quotes are both a lie and
+   obvious. These are claims a visitor can check on this page, right now. */
+const PROOFS = [
+  {
+    claim: "Check the speed yourself",
+    body: "Open your browser's dev tools on this page, or run it through PageSpeed Insights. We are not going to tell you a site is fast and then hand you a slow one.",
+    action: "Run PageSpeed on this page",
+    href: "https://pagespeed.web.dev/",
+  },
+  {
+    claim: "Ask before you commit",
+    body: "Send a question and see how fast the answer comes back, and whether it sounds like a person. That is what working together would feel like.",
+    action: "Ask us something",
+    href: "#contact",
+  },
+  {
+    claim: "Use the demos properly",
+    body: "Four concept builds, live and clickable. Resize them, open them on a phone, tab through them with a keyboard. They are built the way your site would be.",
+    action: "Open a demo",
+    href: "/demos/brew",
+  },
 ];
 
-export function Quotes() {
-  const section = useRef<HTMLElement>(null);
-  const [i, setI] = useState(0);
-  useEffect(() => {
-    const s = section.current;
-    if (!s || prefersReducedMotion()) return;
-    const st = ScrollTrigger.create({
-      trigger: s, start: "top top", end: "bottom bottom", pin: ".wx-quotes__sticky", scrub: false,
-      onUpdate: self => setI(Math.min(QUOTES.length - 1, Math.floor(self.progress * QUOTES.length * 0.999))),
-    });
-    return () => st.kill();
-  }, []);
-  const q = QUOTES[i];
+export function Proof() {
   return (
-    <section ref={section} id="clients" className="wx-quotes" aria-labelledby="quotes-title">
-      <h2 id="quotes-title" className="wx-sr">What clients say</h2>
-      <div className="wx-quotes__sticky">
-        <div className="wx-container wx-quotes__inner" style={{ ["--q-accent" as string]: q.accent }}>
-          <div className="wx-quotes__mark" aria-hidden="true">“</div>
-          <blockquote key={i} className="wx-quotes__text">{q.text}</blockquote>
-          <figcaption className="wx-quotes__who">
-            <b>{q.who}</b>
-            <span>{q.role}</span>
-          </figcaption>
-          <div className="wx-quotes__dots" aria-hidden="true">
-            {QUOTES.map((_, n) => <i key={n} className={n === i ? "is-on" : ""} />)}
-          </div>
+    <section id="proof" className="wx-section" aria-labelledby="proof-title">
+      <div className="wx-container">
+        <div className="wx-section-head">
+          <h2 id="proof-title" className="wx-h2"><Words text="No testimonials. We just started." /></h2>
+          <Fade as="p" className="wx-body" delay={200}>
+            Every new studio's website has five glowing quotes from people you cannot verify. Here is what we can
+            offer instead: things you can check without taking our word for any of it.
+          </Fade>
         </div>
+        <div className="wx-proofs">
+          {PROOFS.map((p, i) => (
+            <Fade key={p.claim} className="wx-proof" delay={i * 90}>
+              <h3 className="wx-h3">{p.claim}</h3>
+              <p className="wx-body">{p.body}</p>
+              <a className="wx-link" href={p.href} target={p.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">{p.action}</a>
+            </Fade>
+          ))}
+        </div>
+        <Fade delay={300}>
+          <p className="wx-proof__note">
+            When there are real clients, their names go here and you will be able to visit their sites. Until then this
+            space stays honest.
+          </p>
+        </Fade>
       </div>
     </section>
   );
 }
 
-/* ── The two people ── */
-const TEAM = [
-  {
-    initials: "DS",
-    name: "Deval",
-    role: "Design and front-end",
-    accent: "var(--wx-copper)",
-    body: "Draws the pages, writes the CSS, and argues for one less section on every project. Answers email before coffee.",
-    does: ["Design", "Front-end", "Motion", "Brand basics"],
-    line: ["Based in", "Thane, India"],
-  },
-  {
-    initials: "WX",
-    name: "Your project",
-    role: "The second seat",
-    accent: "var(--wx-signal)",
-    body: "Every project gets a second pair of eyes on copy, speed and search before it goes live. Nothing ships that only one of us has seen.",
-    does: ["Copy", "Search", "Speed", "Testing"],
-    line: ["Reply time", "One business day"],
-  },
-];
-
+/* ── Who you are actually hiring ── */
 export function Team() {
   return (
     <section id="studio" className="wx-section" aria-labelledby="team-title">
       <div className="wx-container">
         <div className="wx-section-head">
           <h2 id="team-title" className="wx-h2"><Words text="You already know who is building it." /></h2>
-          <Fade as="p" className="wx-body" delay={200}>No account manager, no handover to a team you never met. The people below are the people who reply.</Fade>
+          <Fade as="p" className="wx-body" delay={200}>
+            No account manager, no handover to a team you never met, no junior taking over once the contract is signed.
+          </Fade>
         </div>
-        <div className="wx-team__grid">
-          {TEAM.map((m, i) => (
-            <Fade key={m.name} className="wx-member" delay={i * 120} style={{ ["--m-accent" as string]: m.accent }}>
-              <div className="wx-member__top">
-                <span className="wx-member__avatar" aria-hidden="true">{m.initials}</span>
-                <div>
-                  <h3>{m.name}</h3>
-                  <p className="wx-small">{m.role}</p>
-                </div>
+        <div className="wx-solo">
+          <Fade className="wx-member" style={{ ["--m-accent" as string]: "var(--wx-copper)" }}>
+            <div className="wx-member__top">
+              <span className="wx-member__avatar" aria-hidden="true">WX</span>
+              <div>
+                <h3>The owner</h3>
+                <p className="wx-small">Designer, developer, and the person who replies</p>
               </div>
-              <p className="wx-body">{m.body}</p>
-              <ul className="wx-member__does">{m.does.map(d => <li key={d}>{d}</li>)}</ul>
-              <div className="wx-member__line"><span>{m.line[0]}</span><span>{m.line[1]}</span></div>
-            </Fade>
-          ))}
+            </div>
+            <p className="wx-body">
+              One person designs the pages, writes the code, and argues for one less section on every project.
+              WEBRIXO is new, which means two things: you get undivided attention, and the pricing of someone
+              building a portfolio rather than protecting a rate card.
+            </p>
+            <ul className="wx-member__does">
+              {["Design", "Front-end", "Motion", "Copy", "Search setup"].map(d => <li key={d}>{d}</li>)}
+            </ul>
+            <div className="wx-member__line"><span>Based in</span><span>Thane, India</span></div>
+            <div className="wx-member__line"><span>Reply time</span><span>One business day</span></div>
+          </Fade>
+          <Fade className="wx-solo__aside" delay={120}>
+            <h3 className="wx-h3">What "new" actually means for you</h3>
+            <ul className="wx-solo__list">
+              <li><b>Lower prices.</b> These rates exist because I am building a portfolio, and they will not last.</li>
+              <li><b>Faster replies.</b> There is no queue in front of you.</li>
+              <li><b>More care than the fee justifies.</b> Your site is going to be one of the first things anyone sees when they look me up.</li>
+              <li><b>The honest risk.</b> No long client list to point at yet. That is exactly why the demos and the code are public.</li>
+            </ul>
+          </Fade>
         </div>
       </div>
     </section>

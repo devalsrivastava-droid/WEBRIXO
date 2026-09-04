@@ -9,12 +9,14 @@ import { Preloader, Header } from "@/components/home/Chrome";
 import Hero from "@/components/home/Hero";
 import Showreel from "@/components/home/Showreel";
 import AiBuild from "@/components/home/AiBuild";
+import AiBuilder from "@/components/home/AiBuilder";
 import { Interstitial } from "@/components/home/Sections";
 import { Paths, Process, Manifesto, ScrollTrigger } from "@/components/home/Sections";
 import { Faq, Contact, Footer, CookieBanner, type BuildMode } from "@/components/home/Closing";
 import { Cursor, ScrollProgress, useSmoothScroll, useChromeOnLight, prefersReducedMotion, scrollToId } from "@/components/home/motion";
 import { Marquee, Services, BeforeAfter, Checklist, Chapters } from "@/components/home/Extras";
-import { Stats, Pricing, Quotes, Team } from "@/components/home/Proof";
+import { Stats, Pricing, Proof, Team } from "@/components/home/Proof";
+import { Matcher, Instagram } from "@/components/home/Engage";
 
 const SESSION_KEY = "webrixo-intro-seen";
 
@@ -29,7 +31,7 @@ export default function Home() {
 
   usePageMeta({
     title: "WEBRIXO — Websites for small businesses, designed and built in weeks",
-    description: "WEBRIXO is a two-person design and build studio. Fast, search-ready websites for cafés, gyms, restaurants and small software companies. Build with AI in minutes or with us in weeks.",
+    description: "WEBRIXO is a one-person design and build studio. Fast, search-ready websites for cafés, gyms, restaurants and small software companies. Build with AI in minutes or with us in weeks.",
     path: "/",
     ogImage: "/og-image.png",
   });
@@ -84,10 +86,12 @@ export default function Home() {
         <Stats />
         <Services />
         <AiBuild onStart={() => goToContact("ai")} />
+        <AiBuilder />
         <Paths onStart={goToContact} />
         <Process />
         <BeforeAfter />
-        <Quotes />
+        <Proof />
+        <Matcher />
         <div className="wx-invert">
           <Pricing onStart={() => goToContact("human")} />
           <Checklist />
@@ -95,6 +99,7 @@ export default function Home() {
         <Manifesto />
         <Team />
         <Faq />
+        <Instagram />
         <Interstitial />
         <Contact mode={mode} onModeChange={setMode} />
       </main>

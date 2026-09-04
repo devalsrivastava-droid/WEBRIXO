@@ -43,8 +43,8 @@ export default function Showreel() {
   return (
     <section ref={section} id="work" className="wx-section wx-reel" aria-labelledby="work-title">
       <div className="wx-container wx-section-head">
-        <h2 id="work-title" className="wx-h2"><Words text="Work you can click through, not just look at." /></h2>
-        <Fade as="p" className="wx-body" delay={200}>Every project below is a live demo we designed and built. Open one, resize it, scroll it on your phone.</Fade>
+        <h2 id="work-title" className="wx-h2"><Words text="Concept builds you can click through." /></h2>
+        <Fade as="p" className="wx-body" delay={200}>Nobody hired us for these. They were built to show what a café, a gym, a restaurant and a software product would get — so you can judge the work before paying for any of it. Open one, resize it, scroll it on your phone.</Fade>
       </div>
 
       <div className="wx-reel__viewport" ref={viewport}>

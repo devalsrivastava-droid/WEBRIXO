@@ -1,4 +1,4 @@
-export const SITE_URL = "https://webrixo.com";
+export const SITE_URL = "https://webrixo.vercel.app";
 export const CONTACT_EMAIL = "hello@webrixo.com";
 
 export const NAV = [

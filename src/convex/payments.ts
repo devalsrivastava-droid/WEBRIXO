@@ -30,12 +30,13 @@ const PLAN_LABELS: Record<string, string> = {
   starter: "Starter website",
   studio: "Studio website",
   care: "Care plan, first month",
+  custom: "Website build",
 };
 
 /** A deposit, not the full price: enough to book the work, refundable if we can't help. */
 export const createCheckout = action({
   args: {
-    plan: v.union(v.literal("starter"), v.literal("studio"), v.literal("care")),
+    plan: v.union(v.literal("starter"), v.literal("studio"), v.literal("care"), v.literal("custom")),
     currency: v.string(),
     /** Amount in the smallest unit: paise for INR, cents for USD. */
     minorAmount: v.number(),

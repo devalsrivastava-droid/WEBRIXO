@@ -134,7 +134,6 @@ export class PreviewCodeIssued extends Error {
 
 /* ── Sample content for the account page in preview mode ─────────────────── */
 
-const DAY = 86400000;
 
 export function previewAccountSummary(user: DemoUser | null) {
   if (!user) return null;
@@ -158,21 +157,17 @@ export function previewAccountSummary(user: DemoUser | null) {
       memberSince: user.signedUpAt ?? now,
     },
     stats: {
-      orders: 2,
-      paidOrders: 1,
-      openRequests: 1,
-      requests: 2,
-      spendByCurrency: { [user.currency ?? "INR"]: user.currency === "USD" ? 300 : 20000 },
-      lastActivity: now - DAY,
+      orders: 0,
+      paidOrders: 0,
+      openRequests: 0,
+      requests: 0,
+      spendByCurrency: {},
+      lastActivity: null,
     },
-    orders: [
-      { id: "demo1", plan: "studio", currency: user.currency ?? "INR", minorAmount: (user.currency === "USD" ? 300 : 20000) * 100, status: "paid", createdAt: now - 4 * DAY, receiptUrl: null },
-      { id: "demo2", plan: "care", currency: user.currency ?? "INR", minorAmount: (user.currency === "USD" ? 50 : 4000) * 100, status: "started", createdAt: now - DAY, receiptUrl: null },
-    ],
-    requests: [
-      { id: "demoreq1", mode: "human", business: user.company || "Your business", message: "Sample request. On the live site this is the message you sent us, with our reply status beside it.", status: "new", createdAt: now - DAY },
-      { id: "demoreq2", mode: "ai", business: null, message: "Wanted to see what a generated first version would look like before committing.", status: "replied", createdAt: now - 9 * DAY },
-    ],
+    // Empty on purpose: inventing a payment history would be the same lie as
+    // inventing testimonials. The empty states are part of the design.
+    orders: [],
+    requests: [],
     isPreview: true,
   };
 }

@@ -8,6 +8,7 @@ import { api } from "@/convex/_generated/api";
 import { useAuth } from "@/hooks/use-auth";
 import { usePageMeta } from "@/hooks/use-page-meta";
 import { Mark } from "@/components/home/Chrome";
+import OwnerInbox from "@/components/OwnerInbox";
 import { COUNTRIES, CURRENCIES, countryByCode, format, localTimeIn, type CurrencyCode } from "@/lib/region";
 import "@/styles/home.css";
 
@@ -130,6 +131,8 @@ export default function Account() {
           />
           <Stat label="Last activity" value={when(stats.lastActivity)} note={profile.timezone ? `${localTimeIn(profile.timezone)} where you are` : undefined} />
         </section>
+
+        <OwnerInbox />
 
         <div className="wx-acc__grid">
           <section className="wx-acc__panel" aria-labelledby="details-title">

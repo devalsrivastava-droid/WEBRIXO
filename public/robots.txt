@@ -4,4 +4,4 @@ Disallow: /auth
 Disallow: /account
 Disallow: /thank-you
 
-Sitemap: https://webrixo.com/sitemap.xml
+Sitemap: https://webrixo.vercel.app/sitemap.xml

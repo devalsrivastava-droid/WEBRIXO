@@ -160,7 +160,7 @@ export default function Auth({ redirectAfterAuth }: { redirectAfterAuth?: string
               {strip.slice().reverse().map((p, i) => <div key={`${p.slug}-r${i}`} className="wx-auth__cell"><ProjectFrame project={p} /></div>)}
             </div>
           </div>
-          <p className="wx-auth__caption"><span>Four live demos, two people, one inbox that gets answered.</span></p>
+          <p className="wx-auth__caption"><span>Four concept builds, one person, one inbox that gets answered.</span></p>
         </aside>
       </main>
     </div>

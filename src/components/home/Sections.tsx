@@ -39,18 +39,18 @@ export function Paths({ onStart }: { onStart: (mode: "ai" | "human") => void }) 
           <Path
             accent="var(--wx-signal)"
             name="Build with AI"
-            tagline="Describe your business in a few sentences and get a complete first version of your site: pages, copy and layout. Edit what you like, then publish."
-            facts={[["Ready in", "Minutes"], ["Best for", "A first site, or a quick refresh"], ["You get", "Editable pages, hosting, your domain"], ["You talk to", "An assistant, with us on email"]]}
+            tagline="Describe the business, get a first version in a minute, then edit the words yourself and publish. Always available, no queue, no waiting on us."
+            facts={[["Ready in", "Minutes"], ["Best for", "Getting something decent live today"], ["You get", "Editable pages, hosting, your domain"], ["Availability", "Unlimited, start whenever"]]}
             cta="Build with AI"
             ctaClass="wx-btn--signal"
             onClick={() => onStart("ai")}
-            note="Free to try"
+            note="Free, start now"
           />
           <Path
             accent="var(--wx-copper)"
             name="Build with a human"
-            tagline="We design and build with you from a blank page: your brand, your words, your customers. Made to convert, and made to last."
-            facts={[["Ready in", "2 to 4 weeks"], ["Best for", "A site that has to win customers"], ["You get", "Custom design, copy, build and launch"], ["You talk to", "The two people who build it"]]}
+            tagline="Designed and built on your content, not assembled from a pattern. Better in every way that matters — but it is one person, so there is a queue."
+            facts={[["Ready in", "2 to 4 weeks"], ["Best for", "A site that has to win customers"], ["You get", "Custom design, copy, build and launch"], ["Availability", "One project at a time"]]}
             cta="Talk to us"
             ctaClass="wx-btn--copper"
             onClick={() => onStart("human")}
@@ -98,8 +98,8 @@ export function Process() {
 }
 
 /* ── About: pinned manifesto whose words light up as you scroll ── */
-const MANIFESTO = "We're two people. No account managers, no ticket queues. You talk to the people who design and build your site, and we keep caring whether it works after it's live.";
-const KEY = new Set(["two", "people.", "people", "caring"]);
+const MANIFESTO = "WEBRIXO is one person. No account managers, no ticket queues, no junior handed your project after the pitch. You talk to whoever is building your site, and it stays that way after it is live.";
+const KEY = new Set(["one", "person.", "whoever", "building"]);
 
 export function Manifesto() {
   const section = useRef<HTMLElement>(null);

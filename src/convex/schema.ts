@@ -130,7 +130,25 @@ const schema = defineSchema(
       mode: v.union(v.literal("ai"), v.literal("human")),
       page: v.optional(v.string()),
       userId: v.optional(v.id("users")),
-      status: v.union(v.literal("new"), v.literal("replied"), v.literal("closed")),
+
+      // How they'd like to be reached, and where.
+      phone: v.optional(v.string()),
+      contactVia: v.optional(v.union(v.literal("email"), v.literal("phone"), v.literal("whatsapp"))),
+
+      // What they offered, and what the owner actually agreed to.
+      offeredMinor: v.optional(v.number()),
+      currency: v.optional(v.string()),
+      agreedMinor: v.optional(v.number()),
+      approvedAt: v.optional(v.number()),
+      ownerNote: v.optional(v.string()),
+
+      // Owner's own triage, never automatic deletion.
+      relevant: v.optional(v.boolean()),
+
+      status: v.union(
+        v.literal("new"), v.literal("replied"), v.literal("approved"),
+        v.literal("queued"), v.literal("closed"),
+      ),
       createdAt: v.number(),
     }).index("by_status", ["status"]).index("by_email", ["email"]),
 

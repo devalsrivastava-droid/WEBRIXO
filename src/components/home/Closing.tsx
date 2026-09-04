@@ -6,6 +6,7 @@ import { api } from "@/convex/_generated/api";
 import { FAQ, NAV, CONTACT_EMAIL, PROJECTS } from "./data";
 import { Fade, Words, Magnetic } from "./motion";
 import { Mark } from "./Chrome";
+import { INSTAGRAM_HANDLE, INSTAGRAM_URL } from "./Engage";
 
 const Arrow = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" /></svg>;
 
@@ -54,7 +55,8 @@ export function Contact({ mode, onModeChange }: { mode: BuildMode; onModeChange:
     : async (_args: Record<string, unknown>) => { await new Promise(r => setTimeout(r, 700)); };
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState("");
-  const [form, setForm] = useState({ name: "", email: "", business: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", business: "", message: "", phone: "" });
+  const [via, setVia] = useState<"email" | "phone" | "whatsapp">("email");
 
   const set = (k: keyof typeof form) => (e: { target: { value: string } }) => setForm(f => ({ ...f, [k]: e.target.value }));
 
@@ -62,7 +64,7 @@ export function Contact({ mode, onModeChange }: { mode: BuildMode; onModeChange:
     e.preventDefault();
     setState("sending"); setError("");
     try {
-      await submit({ ...form, mode, page: typeof window !== "undefined" ? window.location.pathname : "/" });
+      await submit({ ...form, contactVia: via, mode, page: typeof window !== "undefined" ? window.location.pathname : "/" });
       setState("sent");
     } catch {
       // Backend unavailable: fall back to the visitor's mail client so nothing is lost.
@@ -108,6 +110,20 @@ export function Contact({ mode, onModeChange }: { mode: BuildMode; onModeChange:
                 <div className="wx-field"><label htmlFor="c-email">Email</label><input id="c-email" name="email" type="email" autoComplete="email" required value={form.email} onChange={set("email")} /></div>
               </div>
               <div className="wx-field"><label htmlFor="c-business">Business or project name</label><input id="c-business" name="business" autoComplete="organization" value={form.business} onChange={set("business")} /></div>
+              <div className="wx-field">
+                <span id="via-label" style={{ fontSize: "0.875rem", color: "var(--wx-ash)" }}>Best way to reach you</span>
+                <div className="wx-segment" role="group" aria-labelledby="via-label">
+                  <button type="button" aria-pressed={via === "email"} onClick={() => setVia("email")}>Email</button>
+                  <button type="button" aria-pressed={via === "phone"} onClick={() => setVia("phone")}>Phone</button>
+                  <button type="button" aria-pressed={via === "whatsapp"} onClick={() => setVia("whatsapp")}>WhatsApp</button>
+                </div>
+              </div>
+              {via !== "email" && (
+                <div className="wx-field">
+                  <label htmlFor="c-phone">Number{via === "whatsapp" ? " for WhatsApp" : ""}</label>
+                  <input id="c-phone" name="phone" type="tel" autoComplete="tel" required value={form.phone} onChange={set("phone")} placeholder="+91 " />
+                </div>
+              )}
               <div className="wx-field"><label htmlFor="c-msg">What should the site do for you?</label><textarea id="c-msg" name="message" required placeholder="For example: we're a gym opening in March and need class bookings and memberships online." value={form.message} onChange={set("message")} /></div>
               {error && <p className="wx-form__status is-error" role="alert">{error}</p>}
               <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
@@ -132,7 +148,7 @@ export function Footer() {
         <div className="wx-footer__grid">
           <div>
             <Link to="/" className="wx-brand" aria-label="WEBRIXO home"><Mark /><span>WEBRIXO</span></Link>
-            <p className="wx-body" style={{ marginTop: "1rem", maxWidth: "36ch" }}>A two-person studio designing and building websites for small businesses and early software companies.</p>
+            <p className="wx-body" style={{ marginTop: "1rem", maxWidth: "36ch" }}>A one-person studio designing and building websites for small businesses and early software companies.</p>
           </div>
           <div className="wx-footer__col">
             <h3>Site</h3>
@@ -148,7 +164,7 @@ export function Footer() {
           <span style={{ display: "flex", gap: "1.25rem" }}>
             <Link to="/privacy">Privacy</Link>
             <Link to="/terms">Terms</Link>
-            <a href="https://instagram.com/webrixo" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">@{INSTAGRAM_HANDLE}</a>
             <a href="#top">Back to top</a>
           </span>
         </div>
